@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result | Apak's BMI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1951&q=80') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .brand-logo {
+            position: absolute; top: 25px; left: 30px; font-size: 1.5rem; font-weight: 800; color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .brand-logo span { color: #2ecc71; }
+
+        /* --- DİNAMİK RENKLİ KART (GLASSMORPHISM) --- */
+        .result-card {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+
+            /* Ortak Cam Efektleri */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            color: white; /* Yazılar beyaz olsun ki renkli cam üzerinde okunsun */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        /* RENK VARYASYONLARI (Opaklık %85 ayarlandı) */
+        .card-success { background: rgba(39, 174, 96, 0.85); }   /* Yeşil */
+        .card-warning { background: rgba(243, 156, 18, 0.85); }   /* Turuncu */
+        .card-danger { background: rgba(192, 57, 43, 0.85); }     /* Kırmızı */
+        .card-info { background: rgba(41, 128, 185, 0.85); }      /* Mavi */
+        .card-dark { background: rgba(44, 62, 80, 0.90); }        /* Koyu Gri */
+        .card-secondary { background: rgba(149, 165, 166, 0.85); } /* Gri */
+
+        .bmi-value { font-size: 5rem; font-weight: 800; margin: 0; line-height: 1; }
+        .bmi-label { font-size: 1.2rem; opacity: 0.9; margin-bottom: 20px; font-weight: 300; }
+
+        .category-badge {
+            display: inline-block; padding: 10px 25px; background: rgba(255,255,255,0.2); border-radius: 50px; border: 1px solid rgba(255,255,255,0.4);
+            font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; font-size: 1rem;
+        }
+
+        .message-box { font-size: 1.4rem; font-weight: 600; margin-bottom: 20px; font-style: italic; }
+
+        .img-container img {
+            max-width: 100%; border-radius: 12px; margin: 20px 0;
+            border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .advice-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; text-align: left; }
+        .stat-item { background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; font-size: 0.9rem; }
+        .stat-item strong { display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.8; }
+
+        .btn-retry {
+            display: block; width: 100%; margin-top: 25px; padding: 15px; background: rgba(0,0,0,0.5); color: white;
+            text-decoration: none; border-radius: 12px; font-weight: 600; transition: background 0.3s; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-retry:hover { background: black; }
+
+        footer { margin-top: 30px; color: rgba(255,255,255,0.7); font-size: 0.8rem; font-family: 'Roboto Mono', monospace; }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="brand-logo">Apak's <span>BMI</span></a>
+
+    <div class="result-card card-{{ result.color }}">
+
+        <h1 class="bmi-value">{{ bmi }}</h1>
+        <div class="bmi-label">BMI Score</div>
+
+        <div class="category-badge">{{ result.category }}</div>
+        <div class="message-box">"{{ result.message }}"</div>
+
+        {% if result.image %}
+        <div class="img-container"><img src="{{ result.image }}" alt="Result Image"></div>
+        {% endif %}
+
+        <div class="advice-box">{{ result.advice }}</div>
+
+        <div class="stats-grid">
+            <div class="stat-item"><strong>💧 Water Intake</strong>{{ water }} Liters / day</div>
+            <div class="stat-item"><strong>⚖️ Ideal Range</strong>{{ ideal_range }}</div>
+        </div>
+
+        {% if result.link_url != '#' %}
+        <div style="margin-top: 20px;">
+            <a href="{{ result.link_url }}" target="_blank" style="color: white; text-decoration: underline; font-weight: 600;">
+                🔗 {{ result.link_text }}
+            </a>
+        </div>
+        {% endif %}
+
+        <a href="/" class="btn-retry">🔄 Judge Me Again</a>
+    </div>
+
+    <footer>&copy; 2026 Ali Apak Project.</footer>
+
+</body>
+</html>
